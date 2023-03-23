@@ -1,7 +1,9 @@
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
 const app = express()
 
+app.use(cors())
 app.use(express.json())
 
 let persons = [
@@ -98,7 +100,7 @@ app.post('/api/persons', (req, res) => {
   res.json(person)
 })
 
-const port = process.env.PORT || 3001
-app.listen(port, () => {
-  console.log(`phonebook_backend listening on port ${port}`)
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => {
+  console.log(`phonebook_backend listening on port ${PORT}`)
 })
