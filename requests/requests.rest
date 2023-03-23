@@ -20,3 +20,13 @@ Content-Type: application/json
   "name": "Arto Hellas",
   "number": "89234-23423"
 }
+
+###
+POST https://phonebook-h4o7.onrender.com/api/persons
+Content-Type: application/json
+
+{
+  "name": "Rest Boy",
+  "number": "420-58247-92"
+}
+
