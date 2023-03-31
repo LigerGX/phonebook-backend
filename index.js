@@ -14,6 +14,10 @@ const info = () => {
   return `<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`
 }
 
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: 'unknown endpoint' })
+}
+
 // morgan logging middleware
 morgan.token('data', (req, res) => {
   if (req.method === 'POST') {
@@ -44,11 +48,17 @@ app.get('/api/persons/:id', (req, res) => {
   res.status(404).end()
 })
 
-app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  persons = persons.filter(person => person.id !== id)
-
-  res.status(204).end()
+app.delete('/api/persons/:id', (req, res, next) => {
+  const id = req.params.id
+  
+  Person
+    .findByIdAndRemove(id)
+    .then(result => {
+      res.status(204).end()
+    })
+    .catch(error => {
+      next(error)
+    })
 })
 
 app.post('/api/persons', (req, res) => {
@@ -70,6 +80,8 @@ app.post('/api/persons', (req, res) => {
   })
 
 })
+
+app.use(unknownEndpoint)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
