@@ -14,10 +14,6 @@ const info = () => {
   return `<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`
 }
 
-const unknownEndpoint = (req, res) => {
-  res.status(404).send({ error: 'unknown endpoint' })
-}
-
 // morgan logging middleware
 morgan.token('data', (req, res) => {
   if (req.method === 'POST') {
@@ -50,7 +46,7 @@ app.get('/api/persons/:id', (req, res) => {
 
 app.delete('/api/persons/:id', (req, res, next) => {
   const id = req.params.id
-  
+
   Person
     .findByIdAndRemove(id)
     .then(result => {
@@ -81,7 +77,38 @@ app.post('/api/persons', (req, res) => {
 
 })
 
+app.put('/api/persons/:id', (req, res, next) => {
+  const id = req.params.id
+  const body = req.body
+
+  const person = {
+    name: body.name,
+    number: body.number
+  }
+
+  Person
+    .findByIdAndUpdate(id, person, { new: true })
+    .then(result => {
+      res.json(result)
+    })
+    .catch(error => {
+      next(error)
+    })
+})
+
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: 'unknown endpoint' })
+}
 app.use(unknownEndpoint)
+
+const errorHandler = (error, req, res, next) => {
+  if (error.name === 'CastError') {
+    return res.status(400).send({ error: 'malformatted id' })
+  }
+
+  next(error)
+}
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
