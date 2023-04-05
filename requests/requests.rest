@@ -39,3 +39,21 @@ Content-Type: application/json
   "number": "420-58247-92"
 }
 
+###
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Re",
+  "number": "420-582-92"
+}
+
+###
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Red",
+  "number": "42-58234234-234"
+}
+
