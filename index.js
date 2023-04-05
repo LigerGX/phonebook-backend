@@ -10,7 +10,7 @@ app.use(cors())
 app.use(express.static('build'))
 app.use(express.json())
 
-const info = () => {
+const info = (persons) => {
   return `<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`
 }
 
@@ -30,18 +30,28 @@ app.get('/api/persons', (req, res) => {
   })
 })
 
-app.get('/info', (req, res) => {
-  res.send(info())
+app.get('/api/persons/:id', (req, res, next) => {
+  const id = req.params.id
+
+  Person
+    .findById(id)
+    .then(result => {
+      res.json(result)
+    })
+    .catch(error => {
+      next(error)
+    })
 })
 
-app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const person = persons.find(person => person.id === id)
-
-  if (person) {
-    res.json(person)
-  }
-  res.status(404).end()
+app.get('/info', (req, res) => {
+  Person
+    .find({})
+    .then(result => {
+      res.send(info(result))
+    })
+    .catch(error => {
+      next(error)
+    })
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
